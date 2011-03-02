@@ -4,3 +4,6 @@ all:
 	gcc -o lr-wgen lr-wgen.c
 	gcc -o lr-parsedata lr-parsedata.c
 	gcc -o lr-reduce lr-reduce.c
+
+clean:
+	rm lr-map lr-datagen lr-wgen lr-parsedata lr-reduce
