@@ -6,10 +6,10 @@ import math
 import sys
 import matplotlib.pylab as plt
 
-rc('font',**{'family':'sans-serif','sans-serif':['Helvetica'],'serif':['Helvetica'], 'size':8})
+rc('font',**{'family':'serif','sans-serif':['Helvetica'],'serif':['Times'], 'size':8})
 rc('text', usetex=True)
 rc('figure', figsize=(3,2))
-rc('figure.subplot', left=0.2, top=0.9, bottom=0.2)
+rc('figure.subplot', left=0.2, right=0.95, top=0.95, bottom=0.2)
 rc('axes', linewidth=0.5)
 rc('lines', linewidth=0.5)
 
@@ -106,51 +106,82 @@ with open(sys.argv[2]) as second:
         xseries2.append(t - min_start)
         yseries2.append(len(active_workers))
 
+        print t - min_start, len(active_workers)
+
+    
 
     duration2 = max_end - min_start
 
 #fig = plt.figure()
 
-#plt.subplots_adjust(wspace=0.2)
+#plt.subplots_adjust(wspace=0.5)
 
 ax = plt.subplot(211, frame_on=False, axisbelow=True)
-plt.plot(xseries1, yseries1, 'b-')
-plt.xlim(0, math.ceil(max(duration1, duration2)))
+plt.plot(xseries1, yseries1, color='0.0')
 plt.ylim(0, 21)
 #ax.tick_params(top='off', right='off')
 plt.xticks([])
-plt.xticks([math.ceil(duration1)], [str(int(math.ceil(x))) for x in [math.ceil(duration1)]] )
-plt.yticks([0, 20], ['0', '20'])
+plt.xticks([math.ceil(duration1)])
+plt.yticks([0, 20], ['0\%', '100\%'])
 #ax.spines['top'].set_color('none')
 #ax.spines['right'].set_color('none')
-ax.axvline(0,color='black')
-ax.axhline(0, color='black')
+#ax.axvline(0,color='black')
+ax.axhline(0, color='black', linewidth=1.0)
 
-plt.ylabel(r'No failure')
+plt.ylabel(r'\centering No \linebreak \centering failure', rotation='horizontal', ha='center')
+
+for tick in ax.yaxis.get_major_ticks():
+    tick.tick1On = False
+    tick.tick2On = False
+    
+for tick in ax.xaxis.get_major_ticks():
+    tick.tick1On = False
+    tick.tick2On = False
+
+plt.xlim(0, math.ceil(max(duration1, duration2)))
+
 
 ax = plt.subplot(212, frame_on=False)
-plt.plot(xseries2, yseries2, 'r-')
-plt.xlim(0, math.ceil(max(duration1, duration2)))
-plt.ylim(0, 21)
+plt.plot(xseries2, yseries2, color='0.0')
 #ax.tick_params(top='off', right='off')
-plt.xticks([0, math.ceil(duration2)], [str(int(math.ceil(x))) for x in [0, math.ceil(duration2)]] )
-plt.yticks([0, 20], ['0', '20'])
-ax.axvline(0, color='black')
-ax.axhline(0, color='black')
+plt.yticks([0, 20], ['0\%', '100\%'])
+#ax.axvline(0, color='black', linewidth=1.0)
+ax.axhline(0, color='black', linewidth=1.0)
 #ax.spines['top'].set_color('none')
 #ax.spines['right'].set_color('none')
 
+for tick in ax.yaxis.get_major_ticks():
+    tick.tick1On = False
+    tick.tick2On = False
+    
+for tick in ax.xaxis.get_major_ticks():
+    tick.tick1On = False
+    tick.tick2On = False
 
-FAIL_START=147.339999914
-FAIL_END=158.470000029
+FAIL_START = 63.0199999809
+FAIL_END = 70.7000000477
 
-ax.annotate(r'Downtime', xy=(FAIL_START + (FAIL_END-FAIL_START)/2.0, 0), xytext=(FAIL_START-100,-6.5), arrowprops={'arrowstyle':"->"})
+ax.bar(FAIL_START, 20, width=FAIL_END-FAIL_START, color='0.8', linewidth=0)
 
-plt.ylabel('Master failure')
-plt.xlabel('Time [sec]')
+#ax.text(FAIL_START + (FAIL_END-FAIL_START)/2.0, 0, 'Downtime', ha='center', fontsize=6)
 
-ax.axvline(FAIL_START, 0, 0.5, color='black')
-ax.axvline(FAIL_END, 0, 0.5, color='black')
+#ax.annotate(r'Downtime', xy=(FAIL_START + (FAIL_END-FAIL_START)/2.0, 5), xytext=((FAIL_START + (FAIL_END-FAIL_START)/2.0,-5)), arrowprops={'arrowstyle':"->", 'linewidth':0.5}, fontsize=6, ha='center')
+
+arr = ax.annotate('', xy=(FAIL_START + (FAIL_END-FAIL_START)/2.0, 5), xytext=(FAIL_START + (FAIL_END-FAIL_START)/2.0, -4), arrowprops={'arrowstyle':"->", 'linewidth':0.5})
+ax.text(FAIL_START + (FAIL_END-FAIL_START)/2.0, -4, r'Downtime', fontsize=6, ha='center')
+
+plt.ylabel(r'\centering Master \linebreak failure', rotation='horizontal', ha='center')
+plt.xlabel('Time since start (s)')
+
+
+plt.xlim(0, math.ceil(max(duration1, duration2)))
+plt.ylim(0, 21)
+
+plt.xticks([0, math.ceil(duration2)])
+
+
+#ax.axvline(FAIL_START, 0, 0.5, color='black')
+#ax.axvline(FAIL_END, 0, 0.5, color='black')
 
 
 plt.savefig('bsp-fault-tolerance.pdf', format='pdf')

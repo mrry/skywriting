@@ -6,10 +6,10 @@ import math
 import sys
 import matplotlib.pylab as plt
 
-rc('font',**{'family':'sans-serif','sans-serif':['Helvetica'],'serif':['Helvetica'], 'size':8})
+rc('font',**{'family':'serif','sans-serif':['Helvetica'],'serif':['Times'], 'size':8})
 rc('text', usetex=True)
 rc('figure', figsize=(3,2))
-rc('figure.subplot', left=0.2, top=0.9, bottom=0.2)
+rc('figure.subplot', left=0.2, top=0.95, right=0.95, bottom=0.2)
 rc('axes', linewidth=0.5)
 rc('lines', linewidth=0.5)
 
@@ -75,19 +75,20 @@ for infile in sys.argv[1:]:
 #plt.subplots_adjust(wspace=0.2)
 
 plt.figure()
-plt.ylabel('Number of chunks')
+#plt.ylabel('Number of chunks')
 
 
 i = 1
-for (xseries1, yseries1, col, chunks) in zip(xs, ys, ['red', 'red', 'blue', 'red', 'red'], [10, 20, 30, 40, 50]):
+for (xseries1, yseries1, col, chunks) in zip(xs, ys, ['0.6', '0.6', '0.0', '0.6', '0.6'], [10, 20, 30, 40, 50]):
     ax = plt.subplot(len(xs), 1, i, frame_on=False)
     plt.plot(xseries1, yseries1, color=col)
     plt.xlim(0, math.ceil(max(durations)))
     plt.ylabel(r'$%d \times %d$' % (chunks, chunks), rotation='horizontal')
     plt.xticks([])
     plt.yticks([])
-    plt.axvline(0, 0, 20, color='k')
-    plt.axhline(0, 0, color='k')
+    plt.axvline(0, color='k', linewidth=1.0)
+    plt.axvline(min(durations), color='k', linewidth=0.5, linestyle='dotted' )
+    plt.axhline(0, color='k', linewidth=1.0)
     #lbl = plt.ylabel(sys.argv[i][-6:-4])
     #lbl.set_rotation(90)
     plt.ylim(0, 21)
@@ -95,9 +96,11 @@ for (xseries1, yseries1, col, chunks) in zip(xs, ys, ['red', 'red', 'blue', 'red
 
 print ax.axis()
 plt.xticks([0, min(durations), max(durations)], ['0', str(int(math.ceil(min(durations)))), str(int(math.ceil(max(durations))))])
-plt.xlabel('Time [sec]')
+plt.xlabel('Time since start (s)')
 
-
+for tick in ax.xaxis.get_major_ticks():
+    tick.tick1On = False
+    tick.tick2On = False
 
 
 #ax.tick_params(top='off', right='off')
@@ -119,5 +122,6 @@ plt.xlabel('Time [sec]')
 
 # plt.xticks((0, math.ceil(min(duration1, duration2)), math.ceil(max(duration1, duration2))), ('0', str(int(math.ceil(min(duration1, duration2)))), str(int(math.ceil(max(duration1, duration2))))))
 
+plt.figtext(0.0, (0.2+0.95)/2, 'Number of chunks', rotation='vertical', verticalalignment='center')
 
 plt.savefig('smithwaterman-util.pdf', format='pdf')

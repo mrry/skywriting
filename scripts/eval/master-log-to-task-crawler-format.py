@@ -44,4 +44,5 @@ for line in sys.stdin.readlines():
 print 'task_id type parent created_at assigned_at committed_at duration num_children num_dependencies num_outputs final_state worker'
            
 for task in tasks.values():
-    print task.attempt_id, 'swi', None, None, task.start_time, task.finish_time, (task.finish_time - task.start_time) if task.finish_time is not None else None, 0, 0, 0, 'COMMITTED', task.worker
+    if task.start_time is not None and task.finish_time is not None:
+        print task.attempt_id, 'swi', None, None, task.start_time, task.finish_time, (task.finish_time - task.start_time) if task.finish_time is not None else None, 0, 0, 0, 'COMMITTED', task.worker
